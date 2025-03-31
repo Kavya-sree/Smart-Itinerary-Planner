@@ -53,6 +53,8 @@ streamlit run app.py
 
 ## Demo video
 
+[video]](images/streamlit-app-2025-03-31-19-03-11.webm)
+
 ## 💡 Future Improvements
 
 * Integration with hotel booking APIs
