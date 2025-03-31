@@ -7,8 +7,11 @@ Get curated travel itineraries, weather forecasts, accommodations, and transport
 
 ## 🚀 Features
 ✅ Personalized Itineraries – AI-generated day-by-day travel plans based on your preferences.
+
 ✅ Best Attractions & Activities – Discover top-rated places and things to do.
+
 ✅ Accommodation Recommendations – Find the best hotels, resorts, or vacation rentals.
+
 ✅ Optimal Transportation Routes – Get the best travel options for flights, public transport, and car rentals.
 
 ## ⚙️ Tech Stack
