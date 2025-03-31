@@ -1,6 +1,6 @@
 from crewai import Task 
 from crewgemini.tools import tools
-from crewgemini.agents import destination_agent, weather_agent, accommodation_agent, transportation_agent
+from crewgemini.agents import destination_agent, weather_agent, accommodation_agent, transportation_agent,schedule_builder_agent 
 
 
 # Task 1: Find the best attractions
@@ -34,8 +34,9 @@ accommodation_task = Task(
     name="Find Best Accommodations",
     agent=accommodation_agent,
     description=(
-        "Search for the best hotels, resorts, or budget-friendly stays in {destination}. "
-        "Consider traveler preferences, location proximity, amenities, and pricing."
+        "Search for the best {accommodation_type} in {destination} within a budget of {budget}. "
+        "Prioritize location near {location_preference} and ensure it includes amenities: {amenities}. "
+        "Provide a list of accommodations with price ranges, ratings, and key features."
     ),
     tools=[tools["search"]],
     expected_output="A list of recommended accommodations with price ranges, ratings, and amenities."
@@ -55,6 +56,18 @@ transportation_task = Task(
                     "along with estimated travel times, costs, and local commuting options."
 )
 
+# Task 5: Create Personalized Itinerary
+schedule_task = Task(
+    name="Create Personalized Travel Schedule",
+    agent=schedule_builder_agent,
+    description=(
+        "Using the list of attractions found by the Destination Researcher, create a personalized {num_days}-day travel plan "
+        "for {destination}. Include details like best visit times, transportation, meal breaks, and alternative plans for weather changes."
+    ),
+    tools=[tools["maps"], tools["search"]],
+    expected_output="A structured day-by-day itinerary with attraction visits, travel routes, "
+                    "meal breaks, and relaxation time optimized for efficiency."
+)
 
 # List of tasks
-tasks = [attraction_task, weather_task, accommodation_task, transportation_task]
+tasks = [attraction_task, weather_task, accommodation_task, transportation_task, schedule_task]

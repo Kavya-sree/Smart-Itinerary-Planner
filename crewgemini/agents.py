@@ -1,22 +1,21 @@
 import os
-import litellm
 from crewai import Agent, LLM
 from crewgemini.tools import tools
 from dotenv import load_dotenv 
 load_dotenv()
 
 
-from langchain_google_genai import ChatGoogleGenerativeAI
+GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
 
 # Checking if the API key is set properly
-if (not os.getenv("GOOGLE_API_KEY")):
+if not GOOGLE_API_KEY:
     raise Exception("Please set GOOGLE_API_KEY.")
 
 os.environ["LITELLM_PROVIDER"] = "google"
 
 llm = LLM(
-    api_key=os.getenv("GOOGLE_API_KEY"),
-    model="gemini/gemini-2.0-flash-lite",
+    api_key=GOOGLE_API_KEY,
+    model="gemini/gemini-2.0-flash",
 )
 
 # Define CrewAI Agents
@@ -35,7 +34,7 @@ destination_agent = Agent(
     memory=True,
     tools=[tools["search"]],
     llm=llm,
-    allow_delegation=True
+    allow_delegation=False
 )
 
 # Weather Forecaster
@@ -62,7 +61,7 @@ accommodation_agent = Agent(
     role="Find the best hotels, resorts, hostels, or vacation rentals in {destination}.",
     goal="Find the most suitable accommodations based on user preferences, budget, and location",
     backstory=
-        """You are a seasoned travel consultant who specializes in finding the best accomodations. 
+        """You are a seasoned travel consultant who specializes in finding the best accommodations. 
         You analyze user preferences, budget, and location to recommend the best places to stay. 
         You work closely with the Destination Researcher and Transportation Specialist
         to ensure a seamless travel experience.""",
@@ -76,6 +75,7 @@ accommodation_agent = Agent(
 
 # Transportation Specialist
 transportation_agent = Agent(
+    name="Transportation Specialist",
     role="Find the best transportation options for traveling from {origin} to {destination} and getting around the destination.",
     goal="Recommend the best transportation options for traveling from {origin} to {destination}, optimizing for cost, efficiency, and convenience.",
     backstory= """You are a travel logistics expert specializing in transportation. 
@@ -90,4 +90,17 @@ transportation_agent = Agent(
     allow_delegation=True
 )
 
-
+# Schedule Builder Agent
+schedule_builder_agent = Agent(
+    name="Schedule Builder",
+    role="Creates a personalized {num_days}-day travel plan.",
+    goal="Ensure an optimal route between attractions while balancing travel time, meal breaks, and relaxation time.",
+    backstory="""You are an expert travel planner who carefully designs itineraries.
+        You take into account attraction locations, opening hours, meal breaks, 
+        relaxation time, and efficient travel routes to optimize the experience.""",
+    verbose=True,
+    memory=True,
+    tools=[tools["maps"], tools["search"]],
+    llm=llm,
+    allow_delegation=True
+)
